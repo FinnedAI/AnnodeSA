@@ -42,10 +42,14 @@ class MyTableMaker:
         return df.sort_values(by="ranking", ascending=False)
 
     def get_deviation_tbl(self):
-        df = pd.DataFrame(self.data)
-        for team in self.data:
-            df[team] = df[team].apply(
-                lambda x: abs(x["sentiment"] - x["ranking"]).mean()
+        df = pd.DataFrame()
+        df["team"] = list(self.data.keys())
+        df["deviation"] = [
+            abs(
+                sum([x["ranking"] for x in self.data[team]]) / len(self.data[team])
+                - sum([x["sentiment"] for x in self.data[team]]) / len(self.data[team])
             )
+            for team in self.data
+        ]
 
-        return df.sort_values(by=0, ascending=True)
+        return df.sort_values(by="deviation", ascending=False)
