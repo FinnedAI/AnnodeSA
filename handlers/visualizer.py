@@ -40,8 +40,6 @@ class MyVisualizer:
 
         if self.static:
             plt.savefig(f"static/{self.sport}_sentiment_bar.png")
-        else:
-            plt.show()
 
         return plt
 
@@ -60,8 +58,6 @@ class MyVisualizer:
 
         if self.static:
             plt.savefig(f"static/{self.sport}_sentiment_dist.png")
-        else:
-            plt.show()
 
         return plt
 
@@ -80,8 +76,6 @@ class MyVisualizer:
 
         if self.static:
             plt.savefig(f"static/{self.sport}_sentiment_baw.png")
-        else:
-            plt.show()
 
         return plt
 
@@ -98,8 +92,6 @@ class MyVisualizer:
 
         if self.static:
             plt.savefig(f"static/{self.sport}_rankings_bar.png")
-        else:
-            plt.show()
 
         return plt
 
@@ -118,8 +110,6 @@ class MyVisualizer:
 
         if self.static:
             plt.savefig(f"static/{self.sport}_rankings_dist.png")
-        else:
-            plt.show()
 
         return plt
 
@@ -136,7 +126,5 @@ class MyVisualizer:
 
         if self.static:
             plt.savefig(f"static/{self.sport}_deviation_bar.png")
-        else:
-            plt.show()
 
         return plt
