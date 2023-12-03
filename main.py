@@ -20,16 +20,16 @@ def test(sport, src):
         )
 
     table_maker = MyTableMaker(sport, src)
-    # print(table_maker.get_sentiment_tbl())
-    # print(table_maker.get_rankings_tbl())
-    # print(table_maker.get_deviation_tbl())
-    visualizer = MyVisualizer(sport, src, static=True)
+    print(table_maker.get_sentiment_tbl())
+    print(table_maker.get_rankings_tbl())
+    print(table_maker.get_deviation_tbl())
+    """visualizer = MyVisualizer(sport, src, static=True)
     visualizer.get_sentiment_bar()
     visualizer.get_sentiment_dist()
     visualizer.get_sentiment_box_and_whisker()
     visualizer.get_rankings_dist()
     visualizer.get_rankings_bar()
-    visualizer.get_deviation_bar()
+    visualizer.get_deviation_bar()"""
 
 
 if __name__ == "__main__":

@@ -29,6 +29,7 @@ class MyTableMaker:
             for team in self.data
         ]
 
+        df = df[df["team"].notna()]
         return df.sort_values(by="sentiment", ascending=False)
 
     def get_normed_sentiment_tbl(self):
@@ -50,6 +51,7 @@ class MyTableMaker:
             for team in self.data
         ]
 
+        df = df[df["team"].notna()]
         return df.sort_values(by="ranking", ascending=False)
 
     def get_normed_rankings_tbl(self):
@@ -67,12 +69,16 @@ class MyTableMaker:
         df["team"] = df["team"].apply(lambda x: self.get_screen_name(x))
         sentiment = self.get_normed_sentiment_tbl()
         rankings = self.get_normed_rankings_tbl()
-        df["deviation"] = [
-            abs(
-                sentiment[sentiment["team"] == team]["sentiment"].values[0]
-                - rankings[rankings["team"] == team]["ranking"].values[0]
-            )
-            for team in self.data
-        ]
 
+        deviation = []
+        for team in df["team"]:
+            s = sentiment[sentiment["team"] == team]["sentiment"].values
+            r = rankings[rankings["team"] == team]["ranking"].values
+            s = s[0] if len(s) > 0 else 0
+            r = r[0] if len(r) > 0 else 0
+
+            deviation.append(abs(r - s))
+
+        df["deviation"] = deviation
+        df = df[df["team"].notna()]
         return df.sort_values(by="deviation", ascending=False)
