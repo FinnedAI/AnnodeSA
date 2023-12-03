@@ -7,19 +7,13 @@ from handlers.tables import MyTableMaker
 
 class MyVisualizer:
     def __init__(self, sport, src, static=False):
-        self.translator = json.load(open(f"config/translated_{src}.json", "r"))
         plt.style.use("ggplot")
         plt.rcParams["figure.figsize"] = [15, 15]
 
         self.sport = sport
         self.data = self.get_data()
         self.static = static
-        self.table_maker = MyTableMaker(self.sport)
-
-    def get_screen_name(self, team):
-        for k, v in self.translator[self.sport].items():
-            if team == v:
-                return k
+        self.table_maker = MyTableMaker(self.sport, src)
 
     def get_data(self):
         data = json.load(open(f"data/{self.sport}.json", "r"))
@@ -30,7 +24,6 @@ class MyVisualizer:
     def get_sentiment_bar(self):
         plt.close()
         df = self.table_maker.get_normed_sentiment_tbl()
-        df["team"] = df["team"].apply(lambda x: self.get_screen_name(x))
         df = df[df["team"].notna()]
         plt.bar(df["team"], df["sentiment"])
         plt.title(f"{self.sport} Sentiment")
@@ -71,7 +64,7 @@ class MyVisualizer:
         plt.ylabel("Sentiment")
         plt.xlabel("Teams")
 
-        labels = [self.get_screen_name(x) for x in self.data.keys()]
+        labels = list(self.data.keys())
         plt.xticks(np.arange(1, len(labels) + 1), labels, rotation=90)
 
         if self.static:
@@ -82,7 +75,6 @@ class MyVisualizer:
     def get_rankings_bar(self):
         plt.close()
         df = self.table_maker.get_normed_rankings_tbl()
-        df["team"] = df["team"].apply(lambda x: self.get_screen_name(x))
         df = df[df["team"].notna()]
         plt.bar(df["team"], df["ranking"])
         plt.title(f"{self.sport} Rankings")
@@ -116,7 +108,6 @@ class MyVisualizer:
     def get_deviation_bar(self):
         plt.close()
         df = self.table_maker.get_deviation_tbl()
-        df["team"] = df["team"].apply(lambda x: self.get_screen_name(x))
         df = df[df["team"].notna()]
         plt.bar(df["team"], df["deviation"])
         plt.title(f"{self.sport} Deviation of Sentiment to Actual Ranking")

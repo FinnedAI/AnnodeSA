@@ -19,7 +19,7 @@ def test(sport, src):
             f"data/{sport}.json does not exist, please download data first."
         )
 
-    table_maker = MyTableMaker(sport)
+    table_maker = MyTableMaker(sport, src)
     # print(table_maker.get_sentiment_tbl())
     # print(table_maker.get_rankings_tbl())
     # print(table_maker.get_deviation_tbl())

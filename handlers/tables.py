@@ -3,9 +3,15 @@ import pandas as pd
 
 
 class MyTableMaker:
-    def __init__(self, sport):
+    def __init__(self, sport, src):
+        self.translator = json.load(open(f"config/translated_{src}.json", "r"))
         self.sport = sport
         self.data = self.get_data()
+
+    def get_screen_name(self, team):
+        for k, v in self.translator[self.sport].items():
+            if team == v:
+                return k
 
     def get_data(self):
         data = json.load(open(f"data/{self.sport}.json", "r"))
@@ -16,6 +22,7 @@ class MyTableMaker:
     def get_sentiment_tbl(self):
         df = pd.DataFrame()
         df["team"] = list(self.data.keys())
+        df["team"] = df["team"].apply(lambda x: self.get_screen_name(x))
         df["sentiment"] = [
             sum([x["sentiment"] for x in self.data[team]])
             / (len(self.data[team]) if len(self.data[team]) != 0 else 1)
@@ -36,6 +43,7 @@ class MyTableMaker:
     def get_rankings_tbl(self):
         df = pd.DataFrame()
         df["team"] = list(self.data.keys())
+        df["team"] = df["team"].apply(lambda x: self.get_screen_name(x))
         df["ranking"] = [
             sum([x["ranking"] for x in self.data[team]])
             / (len(self.data[team]) if len(self.data[team]) != 0 else 1)
@@ -56,6 +64,7 @@ class MyTableMaker:
     def get_deviation_tbl(self):
         df = pd.DataFrame()
         df["team"] = list(self.data.keys())
+        df["team"] = df["team"].apply(lambda x: self.get_screen_name(x))
         sentiment = self.get_normed_sentiment_tbl()
         rankings = self.get_normed_rankings_tbl()
         df["deviation"] = [
