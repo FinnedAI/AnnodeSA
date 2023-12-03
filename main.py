@@ -9,17 +9,26 @@ parser.add_argument("--dwnld", action="store_true")
 args = parser.parse_args()
 
 
-def test():
+def test(sport, src):
     from handlers.tables import MyTableMaker
     from handlers.visualizer import MyVisualizer
+    from os.path import exists
 
-    sport = args.sport
-    # table_maker = MyTableMaker(sport)
-    visualizer = MyVisualizer(sport, static=True)
+    if not exists(f"data/{sport}.json"):
+        raise Exception(
+            f"data/{sport}.json does not exist, please download data first."
+        )
+
+    table_maker = MyTableMaker(sport)
+    # print(table_maker.get_sentiment_tbl())
+    # print(table_maker.get_rankings_tbl())
+    # print(table_maker.get_deviation_tbl())
+    visualizer = MyVisualizer(sport, src, static=True)
     visualizer.get_sentiment_bar()
     visualizer.get_sentiment_dist()
     visualizer.get_sentiment_box_and_whisker()
     visualizer.get_rankings_dist()
+    visualizer.get_rankings_bar()
     visualizer.get_deviation_bar()
 
 
@@ -40,4 +49,4 @@ if __name__ == "__main__":
         data = asyncio.run(handler.get_full_data())
         json.dump(data, open(f"data/{sport}.json", "w"))
 
-    test()
+    test(sport, args.src)

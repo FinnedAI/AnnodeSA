@@ -1,13 +1,5 @@
 import json
 import pandas as pd
-from os.path import exists
-
-reqs = ["nfl.json", "nba.json", "mlb.json", "nhl.json"]
-for req in reqs:
-    if not exists(f"data/{req}"):
-        raise FileNotFoundError(
-            f"Required data/{req} file does not exist. Please run main.py --dwnld to download the data."
-        )
 
 
 class MyTableMaker:
@@ -25,29 +17,51 @@ class MyTableMaker:
         df = pd.DataFrame()
         df["team"] = list(self.data.keys())
         df["sentiment"] = [
-            sum([x["sentiment"] for x in self.data[team]]) / len(self.data[team])
+            sum([x["sentiment"] for x in self.data[team]])
+            / (len(self.data[team]) if len(self.data[team]) != 0 else 1)
             for team in self.data
         ]
 
         return df.sort_values(by="sentiment", ascending=False)
 
+    def get_normed_sentiment_tbl(self):
+        df = self.get_sentiment_tbl()
+        new_df = pd.DataFrame()
+        mu = df["sentiment"].mean()
+        sigma = df["sentiment"].std()
+        new_df["team"] = df["team"]
+        new_df["sentiment"] = [(x - mu) / sigma for x in df["sentiment"]]
+        return new_df.sort_values(by="sentiment", ascending=False)
+
     def get_rankings_tbl(self):
         df = pd.DataFrame()
         df["team"] = list(self.data.keys())
         df["ranking"] = [
-            sum([x["ranking"] for x in self.data[team]]) / len(self.data[team])
+            sum([x["ranking"] for x in self.data[team]])
+            / (len(self.data[team]) if len(self.data[team]) != 0 else 1)
             for team in self.data
         ]
 
         return df.sort_values(by="ranking", ascending=False)
 
+    def get_normed_rankings_tbl(self):
+        df = self.get_rankings_tbl()
+        new_df = pd.DataFrame()
+        mu = df["ranking"].mean()
+        sigma = df["ranking"].std()
+        new_df["team"] = df["team"]
+        new_df["ranking"] = [(x - mu) / sigma for x in df["ranking"]]
+        return new_df.sort_values(by="ranking", ascending=False)
+
     def get_deviation_tbl(self):
         df = pd.DataFrame()
         df["team"] = list(self.data.keys())
+        sentiment = self.get_normed_sentiment_tbl()
+        rankings = self.get_normed_rankings_tbl()
         df["deviation"] = [
             abs(
-                sum([x["ranking"] for x in self.data[team]]) / len(self.data[team])
-                - sum([x["sentiment"] for x in self.data[team]]) / len(self.data[team])
+                sentiment[sentiment["team"] == team]["sentiment"].values[0]
+                - rankings[rankings["team"] == team]["ranking"].values[0]
             )
             for team in self.data
         ]

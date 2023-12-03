@@ -1,6 +1,5 @@
 import json
 import pandas as pd
-import asyncio
 from twscrape import API, gather
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import logging
@@ -13,12 +12,10 @@ credentials = json.load(open("config/credentials.json"))
 class MyAppLogic:
     async def login(self):
         self.api = API()
-        await self.api.pool.add_account(
-            credentials["tw_user"],
-            credentials["tw_pass"],
-            credentials["mail_user"],
-            credentials["mail_pass"],
-        )
+        for user in credentials["users"]:
+            await self.api.pool.add_account(
+                user["tw_user"], user["tw_pass"], user["mail_user"], user["mail_pass"]
+            )
         await self.api.pool.login_all()
 
     def _get_comment_sentiment(self, comment):
@@ -35,12 +32,12 @@ class MyAppLogic:
         )
         for tweet in tweets:
             texts.append(tweet.rawContent)
-            dates.append(tweet.date)
+            date = tweet.date
+            dates.append(f"{date.year}{date.month}{date.day}")
 
         out["text"] = texts
         out["date"] = dates
 
-        await asyncio.sleep(5)
         return out
 
 
@@ -86,6 +83,8 @@ class MyDataHandler:
 
     def _get_all_sentiments(self):
         for hashtag in self.data:
+            self.data[hashtag] = self.data[hashtag].dropna()
+            print(self.data[hashtag]["comments"])
             self.data[hashtag]["sentiment"] = [
                 self.backend._get_comment_sentiment(comment)
                 for comment in self.data[hashtag]["comments"]

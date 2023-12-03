@@ -2,21 +2,12 @@ import matplotlib.pyplot as plt
 import json
 import numpy as np
 import scipy.stats as stats
-from os.path import exists
 from handlers.tables import MyTableMaker
 
 
-translator = json.load(open("config/translated_names.json", "r"))
-reqs = ["nfl.json", "nba.json", "mlb.json", "nhl.json"]
-for req in reqs:
-    if not exists(f"data/{req}"):
-        raise FileNotFoundError(
-            f"Required data/{req} file does not exist. Please run main.py --dwnld to download the data."
-        )
-
-
 class MyVisualizer:
-    def __init__(self, sport, static=False):
+    def __init__(self, sport, src, static=False):
+        self.translator = json.load(open(f"config/translated_{src}.json", "r"))
         plt.style.use("ggplot")
         plt.rcParams["figure.figsize"] = [15, 15]
 
@@ -26,7 +17,7 @@ class MyVisualizer:
         self.table_maker = MyTableMaker(self.sport)
 
     def get_screen_name(self, team):
-        for k, v in translator[self.sport].items():
+        for k, v in self.translator[self.sport].items():
             if team == v:
                 return k
 
@@ -38,10 +29,10 @@ class MyVisualizer:
 
     def get_sentiment_bar(self):
         plt.close()
-        df = self.table_maker.get_sentiment_tbl()
-        x = [self.get_screen_name(x) for x in df["team"]]
-        y = df["sentiment"]
-        plt.bar(x, y)
+        df = self.table_maker.get_normed_sentiment_tbl()
+        df["team"] = df["team"].apply(lambda x: self.get_screen_name(x))
+        df = df[df["team"].notna()]
+        plt.bar(df["team"], df["sentiment"])
         plt.title(f"{self.sport} Sentiment")
         plt.xticks(rotation=90)
         plt.xlabel("Teams")
@@ -96,10 +87,10 @@ class MyVisualizer:
 
     def get_rankings_bar(self):
         plt.close()
-        df = self.table_maker.get_rankings_tbl()
-        x = [self.get_screen_name(x) for x in df["team"]]
-        y = df["ranking"]
-        plt.bar(x, y)
+        df = self.table_maker.get_normed_rankings_tbl()
+        df["team"] = df["team"].apply(lambda x: self.get_screen_name(x))
+        df = df[df["team"].notna()]
+        plt.bar(df["team"], df["ranking"])
         plt.title(f"{self.sport} Rankings")
         plt.xticks(rotation=90)
         plt.xlabel("Teams")
@@ -135,9 +126,9 @@ class MyVisualizer:
     def get_deviation_bar(self):
         plt.close()
         df = self.table_maker.get_deviation_tbl()
-        x = [self.get_screen_name(x) for x in df["team"]]
-        y = df["deviation"]
-        plt.bar(x, y)
+        df["team"] = df["team"].apply(lambda x: self.get_screen_name(x))
+        df = df[df["team"].notna()]
+        plt.bar(df["team"], df["deviation"])
         plt.title(f"{self.sport} Deviation of Sentiment to Actual Ranking")
         plt.xticks(rotation=90)
         plt.xlabel("Teams")
