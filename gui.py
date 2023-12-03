@@ -24,11 +24,6 @@ with col3:
     st.header("Deviation")
     st.dataframe(table_maker.get_deviation_tbl(), use_container_width=True)
 
-
-
-
-
-
 col4, col5, col6 = st.columns(3)
 with col4:
     st.header('NFL Sentiment Distribution')
