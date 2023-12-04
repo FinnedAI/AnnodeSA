@@ -1,0 +1,17 @@
+nltk
+numpy
+pandas
+plotly
+Requests
+scipy
+streamlit
+twscrape
+chardet
+nose
+tox
+Cython
+pylint
+wheel
+twine
+autopep8
+cchardet

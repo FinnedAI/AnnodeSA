@@ -5,14 +5,3 @@ plotly
 Requests
 scipy
 streamlit
-twint
-twscrape
-chardet
-nose
-tox
-Cython
-pylint
-wheel
-twine
-autopep8
-cchardet
