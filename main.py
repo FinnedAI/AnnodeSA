@@ -46,7 +46,10 @@ if __name__ == "__main__":
 
     if dwnld:
         handler = MyDataHandler(sport)
-        data = asyncio.run(handler.get_full_data())
-        json.dump(data, open(f"data/{sport}.json", "w"))
+        if args.src == "twitter":
+            data = asyncio.run(handler.get_full_data())
+        elif args.src == "reddit":
+            data = handler.get_full_data()
+        json.dump(data, open(f"{args.src}_data/{sport}.json", "w"))
 
-    test(sport, args.src)
+    # test(sport, args.src)

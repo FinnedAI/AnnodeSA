@@ -10,8 +10,6 @@ class MyAppGUI:
         self.table_maker = None
         self.visualizer = None
 
-        teams = self.common.teams()
-        self.teams = self.common.inverse_teams(teams, type="list")
         st.set_page_config(layout="wide")
 
     def sidebar(self):
@@ -19,13 +17,8 @@ class MyAppGUI:
         sportselect = st.sidebar.selectbox("Sport", ["NFL", "NBA", "MLB", "NHL"])
         srcselect = st.sidebar.selectbox("Source", ["Twitter", "Reddit"])
         st.sidebar.header("Teams")
-        teamselect = st.sidebar.multiselect(
-            "Select Teams",
-            self.teams,
-            default=self.teams,
-        )
 
-        return sportselect.lower(), srcselect.lower(), teamselect
+        return sportselect.lower(), srcselect.lower()
 
     def description(self, sport, src):
         st.title("AnnodeSA")
@@ -148,10 +141,18 @@ class MyAppGUI:
                     )
 
     def main(self):
-        sport, src, teams = self.sidebar()
+        sport, src = self.sidebar()
+        self.common = common.MyCommonOps(sport, src)
         self.table_maker = tables.MyTableMaker(sport, src)
         self.visualizer = visualizer.MyVisualizer(sport, src)
-        self.common = common.MyCommonOps(sport, src)
+
+        teams = self.common.teams()
+        teams = self.common.inverse_teams(teams, type="list")
+        teams = st.sidebar.multiselect(
+            "Select Teams",
+            teams,
+            default=teams,
+        )
 
         self.description(sport, src)
 

@@ -5,7 +5,7 @@ import logging
 import requests
 import time
 
-subreddits = json.load(open("config/translated_names.json"))
+subreddits = json.load(open("config/translated_reddit.json"))
 
 
 class MyAppLogic:
@@ -72,8 +72,7 @@ class MyDataHandler:
         for team, subreddit in self.subreddits.items():
             if team not in rankings:
                 logging.warning(f"Could not find {team} in rankings")
-                rank = [0.66] * 100
-                continue
+                rankings[team] = 0.5
 
             if subreddit not in self.data:
                 self.data[subreddit] = pd.DataFrame()

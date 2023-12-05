@@ -61,8 +61,7 @@ class MyDataHandler:
         for team, hashtag in self.hashes.items():
             if team not in rankings:
                 logging.warning(f"Could not find {team} in rankings")
-                rank = [0.66] * 100
-                continue
+                rankings[team] = 0.5
 
             if hashtag not in self.data:
                 self.data[hashtag] = pd.DataFrame()
@@ -84,7 +83,6 @@ class MyDataHandler:
     def _get_all_sentiments(self):
         for hashtag in self.data:
             self.data[hashtag] = self.data[hashtag].dropna()
-            print(self.data[hashtag]["comments"])
             self.data[hashtag]["sentiment"] = [
                 self.backend._get_comment_sentiment(comment)
                 for comment in self.data[hashtag]["comments"]
