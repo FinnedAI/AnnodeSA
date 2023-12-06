@@ -22,7 +22,7 @@ class MyAppGUI:
 
     def description(self, sport, src):
         st.title("AnnodeSA")
-        st.write(f"Showing data for {sport} from {src}.")
+        st.write(f"Showing data for {sport.upper()} from {src.capitalize()}.")
 
     def kpis(self, kpis):
         cols = st.columns(len(kpis))
