@@ -7,6 +7,7 @@ import time
 
 subreddits = json.load(open("config/translated_reddit.json"))
 
+# Handles the sentiment analysis and scraping of subreddit data.
 
 class MyAppLogic:
     def _get_comment_sentiment(self, comment):

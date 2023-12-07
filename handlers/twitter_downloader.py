@@ -9,6 +9,7 @@ hashtags = json.load(open("config/translated_twitter.json"))
 credentials = json.load(open("config/credentials.json"))
 
 
+# Handles login and scraping of tweets using provided APIs and credentials.
 class MyAppLogic:
     async def login(self):
         self.api = API()
@@ -41,6 +42,7 @@ class MyAppLogic:
         return out
 
 
+# Manages sports data handling including login, fetching rankings, comments, and sentiments.
 class MyDataHandler:
     def __init__(self, sport):
         self.sport = sport

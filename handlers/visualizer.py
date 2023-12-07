@@ -6,6 +6,7 @@ import json
 import scipy.stats as stats
 
 
+# Visualizes and analyzes sports data with a focus on sentiment
 class MyVisualizer:
     def __init__(self, sport, src):
         self.sport = sport

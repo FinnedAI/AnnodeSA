@@ -2,6 +2,7 @@ import json
 import pandas as pd
 
 
+# Handles operations related to sports data, such as translation and data retrieval
 class MyTableMaker:
     def __init__(self, sport, src):
         self.translator = json.load(open(f"config/translated_{src}.json", "r"))
@@ -42,6 +43,7 @@ class MyTableMaker:
         new_df["sentiment"] = [(x - mu) / sigma for x in df["sentiment"]]
         new_df = new_df[new_df["team"].notna()].set_index("team")
         return new_df.sort_values(by="sentiment", ascending=False)
+    # Gets normalized sentiment
 
     def get_rankings_tbl(self):
         df = pd.DataFrame()
@@ -52,6 +54,7 @@ class MyTableMaker:
             / (len(self.data[team]) if len(self.data[team]) != 0 else 1)
             for team in self.data
         ]
+        # Gets Rankings
 
         df = df[df["team"].notna()].set_index("team")
         return df.sort_values(by="ranking", ascending=False)

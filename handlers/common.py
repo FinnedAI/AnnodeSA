@@ -3,6 +3,7 @@ import pandas as pd
 import json
 
 
+# Performs common operations on sports data, such as data retrieval and translation.
 class MyCommonOps:
     def __init__(self, sport, src):
         self.sport = sport
