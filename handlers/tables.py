@@ -10,17 +10,20 @@ class MyTableMaker:
         self.src = src
         self.data = self.get_data()
 
+    # Method to retrieve a screen name based on a given team name
     def get_screen_name(self, team):
         for k, v in self.translator[self.sport].items():
             if team == v:
                 return k
 
+    # loads and preprocess sports data from a JSON file
     def get_data(self):
         data = json.load(open(f"{self.src}_data/{self.sport}.json", "r"))
         for team in data:
             data[team] = [x for x in data[team] if x["sentiment"] != 0]
         return data
 
+    # Creates a sentiment table
     def get_sentiment_tbl(self):
         df = pd.DataFrame()
         df["team"] = list(self.data.keys())
@@ -34,6 +37,7 @@ class MyTableMaker:
         df = df[df["team"].notna()].set_index("team")
         return df.sort_values(by="sentiment", ascending=False)
 
+    # Creates a normalized sentiment table
     def get_normed_sentiment_tbl(self):
         df = self.get_sentiment_tbl()
         new_df = pd.DataFrame()
@@ -43,8 +47,8 @@ class MyTableMaker:
         new_df["sentiment"] = [(x - mu) / sigma for x in df["sentiment"]]
         new_df = new_df[new_df["team"].notna()].set_index("team")
         return new_df.sort_values(by="sentiment", ascending=False)
-    # Gets normalized sentiment
 
+    # Creates a ranking table
     def get_rankings_tbl(self):
         df = pd.DataFrame()
         df["team"] = list(self.data.keys())
@@ -59,6 +63,7 @@ class MyTableMaker:
         df = df[df["team"].notna()].set_index("team")
         return df.sort_values(by="ranking", ascending=False)
 
+    # Creates a normalized rankings table
     def get_normed_rankings_tbl(self):
         df = self.get_rankings_tbl()
         new_df = pd.DataFrame()
@@ -69,6 +74,7 @@ class MyTableMaker:
         new_df = new_df[new_df["team"].notna()].set_index("team")
         return new_df.sort_values(by="ranking", ascending=False)
 
+    # Creates a deviation table comparing sentiment and rankings
     def get_deviation_tbl(self):
         df = pd.DataFrame()
         df["team"] = list(self.data.keys())

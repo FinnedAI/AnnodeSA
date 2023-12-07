@@ -8,18 +8,23 @@ import scipy.stats as stats
 
 # Visualizes and analyzes sports data with a focus on sentiment
 class MyVisualizer:
+
+    # Initializes class with sport type, data source, and common operations.
     def __init__(self, sport, src):
         self.sport = sport
         self.src = src
         self.common = MyCommonOps(sport, src)
         self.data = self.get_data()
 
+    # loads and preprocess sports data from a JSON file
     def get_data(self):
         data = json.load(open(f"{self.src}_data/{self.sport}.json", "r"))
         for team in data:
             data[team] = [x for x in data[team] if x["sentiment"] != 0]
         return data
 
+    # calculates and returns sentiment distribution
+    # df stands for DataFrame, contains sentiment data
     def get_sentiment_dist(self, df):
         mu = df["sentiment"].mean()
         sigma = df["sentiment"].std()
@@ -28,6 +33,7 @@ class MyVisualizer:
 
         return pd.DataFrame(y, index=x)
 
+    # generates a box and whisker plot for sentiment data
     def get_sentiment_box_and_whisker(self):
         data = [
             {"team": team, "sentiment": x["sentiment"]}
@@ -40,6 +46,7 @@ class MyVisualizer:
 
         return plt
 
+    # calculates and returns rankings distribution
     def get_rankings_dist(self, df):
         mu = df["ranking"].mean()
         sigma = df["ranking"].std()
